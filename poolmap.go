@@ -57,8 +57,8 @@ func Map(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
 	return out, err
 }
 
-// MapNoLogging serves the same purpose as Map but does not log anything.
-func MapNoLogging(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
+// MapSilently offers the same functionality as Map but does not log progress.
+func MapSilently(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
 	jobs := make(chan interface{}, len(from))
 	results := make(chan interface{}, len(from))
 	errors := make(chan error, len(from))
