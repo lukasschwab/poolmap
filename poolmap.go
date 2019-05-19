@@ -23,7 +23,7 @@ type Operation func(interface{}) (interface{}, error)
 //
 // NOTE: Map will not maintain order because of parallelism unless LIM = 1.
 func Map(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
-	defer timeTrack(time.Now(), "Slicemap time")
+	defer timeTrack(time.Now(), "Slicemap")
 	jobs := make(chan interface{}, len(from))
 	results := make(chan interface{}, len(from))
 	errors := make(chan error, len(from))
@@ -49,7 +49,7 @@ func Map(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
 	for i := 0; i < len(from); i++ {
 		out[i], err[i] = <-results, <-errors
 		if err[i] != nil {
-			log.Print("ERROR:", err)
+			log.Print("ERROR:", err[i])
 		}
 		bar.Increment()
 	}
@@ -59,6 +59,7 @@ func Map(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
 
 // MapSilently offers the same functionality as Map but does not log progress.
 func MapSilently(from []interface{}, op Operation, lim int) ([]interface{}, []error) {
+  // TODO: reduce redundancy. One function, boolean as argument; construct a logger.
 	jobs := make(chan interface{}, len(from))
 	results := make(chan interface{}, len(from))
 	errors := make(chan error, len(from))
